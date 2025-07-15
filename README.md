@@ -1,176 +1,251 @@
-# Parking Management System
+# 駐車場管理システム (Parking Management System)
 
-A Java Spring Boot application for managing parking spots and sessions with PostgreSQL database.
+## 概要
 
-## Features
+このプロジェクトは、包括的な駐車場管理システムです。支払い処理、認証・認可、通知システム、多言語対応、管理者ダッシュボードなどの機能を提供します。
 
-- **Parking Spot Management**: Create, update, delete, and query parking spots
-- **Parking Session Management**: Start and end parking sessions
-- **Multiple Spot Types**: Regular, Disabled, Electric Charging, Motorcycle, Truck
-- **Real-time Statistics**: Available spots, occupied spots, active sessions
-- **Payment Status Tracking**: Track payment status for parking sessions
-- **RESTful API**: Comprehensive REST endpoints for all operations
+## 主な機能
 
-## Technology Stack
+### 🔐 認証・認可システム
+- **ユーザー登録・ログイン**: JWTトークンベースの認証
+- **ロールベースアクセス制御**: ユーザー、管理者の権限管理
+- **パスワード暗号化**: BCryptによるセキュアなパスワード管理
+- **セッション管理**: トークンの有効期限管理
 
-- **Java 17**
-- **Spring Boot 3.2.0**
-- **Spring Data JPA**
-- **PostgreSQL**
-- **Flyway** (Database migration)
-- **Lombok**
-- **Gradle**
+### 💳 支払いシステム
+- **多様な支払い方法**: クレジットカード、デビットカード、現金、電子ウォレット、モバイル決済、QRコード
+- **支払い処理**: リアルタイム決済処理と検証
+- **返金処理**: 自動・手動返金機能
+- **支払い履歴**: 詳細な取引履歴と統計
 
-## Prerequisites
+### 📧 通知システム
+- **多チャンネル通知**: メール、SMS、プッシュ通知、システム通知
+- **通知管理**: 既読・未読管理、通知削除、再送信機能
+- **優先度管理**: 低、通常、高、緊急の優先度設定
+- **通知統計**: 送信成功率、失敗率の監視
 
-- Java 17 or higher
-- PostgreSQL 12 or higher
-- Gradle 7.0 or higher
+### 📊 管理者ダッシュボード
+- **リアルタイム統計**: 収益、利用状況、支払い方法別統計
+- **レポート機能**: 日次・月次・年次レポート
+- **システム監視**: ヘルスチェック、パフォーマンス監視
 
-## Database Setup
+### 🌐 多言語対応
+- **日本語・英語対応**: メッセージリソースの多言語化
+- **ロケール設定**: 動的言語切り替え
 
-1. Create a PostgreSQL database:
+### 🔒 セキュリティ機能
+- **Spring Security**: 包括的なセキュリティ設定
+- **CORS設定**: クロスオリジンリクエストの適切な処理
+- **入力検証**: バリデーション機能
+- **エラーハンドリング**: セキュアなエラー処理
+
+## 技術スタック
+
+### バックエンド
+- **Spring Boot 3.2.0**: メインフレームワーク
+- **Spring Security**: 認証・認可
+- **Spring Data JPA**: データアクセス
+- **PostgreSQL**: データベース
+- **JWT**: トークンベース認証
+- **Doma2**: SQLマッピングフレームワーク
+
+### フロントエンド
+- **React**: ユーザーインターフェース
+- **CSS3**: モダンなスタイリング
+- **レスポンシブデザイン**: モバイル対応
+
+## データベーススキーマ
+
+### 主要テーブル
+- `users`: ユーザー情報
+- `roles`: ロール定義
+- `payments`: 支払い情報
+- `notifications`: 通知データ
+- `reports`: レポート情報
+- `parking_sessions`: 駐車場セッション
+
+## API エンドポイント
+
+### 認証 API
+```
+POST /api/auth/register     # ユーザー登録
+POST /api/auth/login        # ログイン
+POST /api/auth/change-password  # パスワード変更
+POST /api/auth/validate-token   # トークン検証
+```
+
+### 支払い API
+```
+POST /api/payments/process      # 支払い処理
+POST /api/payments/refund       # 返金処理
+GET  /api/payments/statistics   # 支払い統計
+GET  /api/payments/history      # 支払い履歴
+```
+
+### 通知 API
+```
+GET  /api/notifications/user/{userId}      # ユーザー通知一覧
+GET  /api/notifications/user/{userId}/unread  # 未読通知
+PUT  /api/notifications/{id}/read          # 既読処理
+DELETE /api/notifications/{id}              # 通知削除
+POST /api/notifications/{id}/resend        # 再送信
+```
+
+### ダッシュボード API
+```
+GET /api/dashboard/overview        # 概要統計
+GET /api/dashboard/revenue         # 収益レポート
+GET /api/dashboard/utilization     # 利用率統計
+GET /api/dashboard/payment-methods # 支払い方法統計
+```
+
+## セットアップ
+
+### 前提条件
+- Java 17+
+- PostgreSQL 12+
+- Node.js 16+
+- npm または yarn
+
+### バックエンドセットアップ
+
+1. **データベース設定**
 ```sql
-CREATE DATABASE parking_db;
+CREATE DATABASE parking_management;
 ```
 
-2. Create a user (optional):
-```sql
-CREATE USER parking_user WITH PASSWORD 'parking_password';
-GRANT ALL PRIVILEGES ON DATABASE parking_db TO parking_user;
+2. **アプリケーション設定**
+```properties
+# application.properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/parking_management
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+
+# JWT設定
+jwt.secret=your_jwt_secret_key
+jwt.expiration=86400000
+
+# メール設定
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=your_email@gmail.com
+spring.mail.password=your_app_password
 ```
 
-## Configuration
-
-Update the database connection settings in `src/main/resources/application.yml`:
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/parking_db
-    username: parking_user
-    password: parking_password
-```
-
-## Running the Application
-
-1. **Build the project**:
+3. **アプリケーション起動**
 ```bash
-./gradlew build
-```
-
-2. **Run the application**:
-```bash
+cd devlop/parking
 ./gradlew bootRun
 ```
 
-The application will start on `http://localhost:8080`
+### フロントエンドセットアップ
 
-## API Endpoints
-
-### Parking Spots
-
-- `GET /api/parking/spots` - Get all parking spots
-- `GET /api/parking/spots/{id}` - Get parking spot by ID
-- `GET /api/parking/spots/number/{spotNumber}` - Get parking spot by number
-- `GET /api/parking/spots/available` - Get available parking spots
-- `GET /api/parking/spots/available/{spotType}` - Get available spots by type
-- `POST /api/parking/spots` - Create new parking spot
-- `PUT /api/parking/spots/{id}` - Update parking spot
-- `DELETE /api/parking/spots/{id}` - Delete parking spot
-
-### Parking Sessions
-
-- `POST /api/parking/sessions/start` - Start parking session
-- `POST /api/parking/sessions/{sessionId}/end` - End parking session
-- `POST /api/parking/sessions/end-by-license` - End session by license plate
-- `PUT /api/parking/sessions/{sessionId}/payment` - Update payment status
-- `GET /api/parking/sessions/license/{licensePlate}` - Get sessions by license plate
-- `GET /api/parking/sessions/active` - Get active sessions
-
-### Statistics
-
-- `GET /api/parking/stats` - Get all statistics
-- `GET /api/parking/stats/available-spots` - Get available spots count
-- `GET /api/parking/stats/occupied-spots` - Get occupied spots count
-- `GET /api/parking/stats/active-sessions` - Get active sessions count
-
-## Example API Usage
-
-### Start a Parking Session
+1. **依存関係インストール**
 ```bash
-curl -X POST http://localhost:8080/api/parking/sessions/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "spotId": 1,
-    "licensePlate": "ABC-123"
-  }'
+cd devlop/parking/frontend
+npm install
 ```
 
-### End a Parking Session
+2. **開発サーバー起動**
 ```bash
-curl -X POST http://localhost:8080/api/parking/sessions/1/end
+npm start
 ```
 
-### Get Available Spots
-```bash
-curl http://localhost:8080/api/parking/spots/available
-```
+## 使用方法
 
-### Get Statistics
-```bash
-curl http://localhost:8080/api/parking/stats
-```
+### 1. ユーザー登録・ログイン
+- フロントエンドの認証フォームからユーザー登録
+- JWTトークンによる自動認証
 
-## Database Schema
+### 2. 支払い処理
+- 複数の支払い方法から選択
+- リアルタイム決済処理
+- 支払い履歴の確認
 
-### Parking Spots Table
-- `id` - Primary key
-- `spot_number` - Unique spot identifier
-- `spot_type` - Type of parking spot (REGULAR, DISABLED, etc.)
-- `status` - Current status (AVAILABLE, OCCUPIED, etc.)
-- `floor_level` - Floor level of the spot
-- `hourly_rate` - Hourly parking rate
-- `created_at` - Creation timestamp
-- `updated_at` - Last update timestamp
+### 3. 通知管理
+- 通知センターで通知一覧表示
+- 既読・未読の管理
+- 通知の削除・再送信
 
-### Parking Sessions Table
-- `id` - Primary key
-- `parking_spot_id` - Foreign key to parking_spots
-- `license_plate` - Vehicle license plate
-- `entry_time` - Session start time
-- `exit_time` - Session end time
-- `total_amount` - Total parking fee
-- `status` - Session status (ACTIVE, COMPLETED, etc.)
-- `payment_status` - Payment status (PENDING, PAID, etc.)
-- `created_at` - Creation timestamp
-- `updated_at` - Last update timestamp
+### 4. 管理者機能
+- ダッシュボードで統計確認
+- レポート生成
+- システム監視
 
-## Spot Types
+## セキュリティ考慮事項
 
-- `REGULAR` - Standard parking spots
-- `DISABLED` - Accessible parking spots
-- `ELECTRIC_CHARGING` - Spots with electric charging
-- `MOTORCYCLE` - Motorcycle parking spots
-- `TRUCK` - Large vehicle parking spots
+### 認証・認可
+- JWTトークンの適切な管理
+- パスワードの暗号化（BCrypt）
+- ロールベースアクセス制御
 
-## Development
+### データ保護
+- 入力値の検証
+- SQLインジェクション対策
+- XSS対策
 
-### Running Tests
-```bash
-./gradlew test
-```
+### 通信セキュリティ
+- HTTPS通信の強制
+- CORS設定の適切な管理
+- セキュアなヘッダー設定
 
-### Database Migration
-The application uses Flyway for database migrations. Migration scripts are located in `src/main/resources/db/migration/`.
+## 監視・ログ
 
-### Adding New Features
-1. Create entity classes in `src/main/java/com/parking/entity/`
-2. Create repository interfaces in `src/main/java/com/parking/repository/`
-3. Add business logic in `src/main/java/com/parking/service/`
-4. Create REST endpoints in `src/main/java/com/parking/controller/`
-5. Add database migrations if needed
+### アプリケーション監視
+- ヘルスチェックエンドポイント
+- パフォーマンスメトリクス
+- エラーログの収集
 
-## License
+### 通知監視
+- 送信成功率の監視
+- 失敗通知の自動検出
+- 通知統計の定期レポート
 
-This project is licensed under the MIT License. "# parking" 
+## 今後の拡張予定
+
+### 短期目標
+- [ ] リアルタイム通知（WebSocket）
+- [ ] モバイルアプリ対応
+- [ ] 決済ゲートウェイ統合
+
+### 中期目標
+- [ ] AI予測機能（需要予測）
+- [ ] 動的料金設定
+- [ ] 予約システム
+
+### 長期目標
+- [ ] マルチテナント対応
+- [ ] マイクロサービス化
+- [ ] クラウドネイティブ対応
+
+## トラブルシューティング
+
+### よくある問題
+
+1. **データベース接続エラー**
+   - PostgreSQLサービスの確認
+   - 接続情報の確認
+
+2. **JWT認証エラー**
+   - トークンの有効期限確認
+   - シークレットキーの設定確認
+
+3. **通知送信エラー**
+   - メール設定の確認
+   - SMS設定の確認
+
+## ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています。
+
+## 貢献
+
+プルリクエストやイシューの報告を歓迎します。貢献する前に、コーディング規約を確認してください。
+
+## サポート
+
+技術的な質問やサポートが必要な場合は、イシューを作成してください。
+
+---
+
+**注意**: 本システムは開発・テスト環境用です。本番環境での使用前に、セキュリティ設定の見直しと十分なテストを実施してください。 
