@@ -10,12 +10,21 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import javax.sql.DataSource;
 
+/**
+ * Doma2設定クラス
+ * Doma2フレームワークの設定を管理
+ */
 @Configuration
 public class DomaConfig {
     
     @Autowired
     private DataSource dataSource;
     
+    /**
+     * Doma2の設定Bean
+     * PostgreSQL方言とトランザクション対応データソースを設定
+     * @return Doma2設定
+     */
     @Bean
     public Config domaConfig() {
         return new Config() {

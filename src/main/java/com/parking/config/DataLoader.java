@@ -7,6 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * データローダー
+ * アプリケーション起動時にサンプルデータを自動挿入
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -14,13 +18,19 @@ public class DataLoader implements CommandLineRunner {
 
     private final ParkingSpotRepository parkingSpotRepository;
 
+    /**
+     * アプリケーション起動時に実行されるメソッド
+     * データベースが空の場合、サンプルデータを挿入
+     * @param args コマンドライン引数
+     * @throws Exception 例外
+     */
     @Override
     public void run(String... args) throws Exception {
         // サンプルデータが既に存在するかチェック
         if (parkingSpotRepository.count() == 0) {
             log.info("サンプルデータを挿入しています...");
             
-            // サンプルデータの挿入
+            // 通常スペットのサンプルデータを挿入
             ParkingSpot spot1 = new ParkingSpot();
             spot1.setSpotNumber("A-001");
             spot1.setSpotType(ParkingSpot.SpotType.REGULAR);
@@ -29,6 +39,7 @@ public class DataLoader implements CommandLineRunner {
             spot1.setHourlyRate(5.0);
             parkingSpotRepository.save(spot1);
 
+            // 通常スペット（続き）
             ParkingSpot spot2 = new ParkingSpot();
             spot2.setSpotNumber("A-002");
             spot2.setSpotType(ParkingSpot.SpotType.REGULAR);
@@ -45,6 +56,7 @@ public class DataLoader implements CommandLineRunner {
             spot3.setHourlyRate(5.0);
             parkingSpotRepository.save(spot3);
 
+            // 障害者用スペットのサンプルデータを挿入
             ParkingSpot spot4 = new ParkingSpot();
             spot4.setSpotNumber("B-001");
             spot4.setSpotType(ParkingSpot.SpotType.DISABLED);
@@ -61,6 +73,7 @@ public class DataLoader implements CommandLineRunner {
             spot5.setHourlyRate(3.0);
             parkingSpotRepository.save(spot5);
 
+            // 充電器付きスペットのサンプルデータを挿入
             ParkingSpot spot6 = new ParkingSpot();
             spot6.setSpotNumber("C-001");
             spot6.setSpotType(ParkingSpot.SpotType.ELECTRIC_CHARGING);
@@ -77,6 +90,7 @@ public class DataLoader implements CommandLineRunner {
             spot7.setHourlyRate(7.0);
             parkingSpotRepository.save(spot7);
 
+            // バイク用スペットのサンプルデータを挿入
             ParkingSpot spot8 = new ParkingSpot();
             spot8.setSpotNumber("D-001");
             spot8.setSpotType(ParkingSpot.SpotType.MOTORCYCLE);
@@ -93,6 +107,7 @@ public class DataLoader implements CommandLineRunner {
             spot9.setHourlyRate(2.0);
             parkingSpotRepository.save(spot9);
 
+            // トラック用スペットのサンプルデータを挿入
             ParkingSpot spot10 = new ParkingSpot();
             spot10.setSpotNumber("E-001");
             spot10.setSpotType(ParkingSpot.SpotType.TRUCK);
