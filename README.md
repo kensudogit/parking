@@ -1,8 +1,54 @@
-# 駐車場管理システム (Parking Management System)
+# Smart Parking Platform — Payments / Operations / Security
 
-## 概要
+> **Smart Parking & Payment Platform** — 駐車セッション、決済、通知、認証・認可、運営ダッシュボードを統合したSpring Boot / Reactベースの駐車場管理プラットフォームです。
+>
+> **Stack:** Java 17 · Spring Boot · Spring Security · PostgreSQL · Doma2 · JWT · React
 
-このプロジェクトは、包括的な駐車場管理システムです。支払い処理、認証・認可、通知システム、多言語対応、管理者ダッシュボードなどの機能を提供します。
+## Architecture
+
+```text
+User / Administrator
+        │
+        ▼
+     React UI
+        │
+        ▼
+ Spring Boot REST API
+ ├── Authentication / RBAC
+ ├── Parking Sessions
+ ├── Payments / Refunds
+ ├── Notifications
+ ├── Dashboard / Reports
+ └── Monitoring
+        │
+        ▼
+    PostgreSQL
+```
+
+## Platform Capabilities
+
+- 駐車セッション・利用状況管理
+- 複数支払い方式と返金処理
+- JWT / Role-Based Access Control
+- メール・SMS・Push等を想定した通知管理
+- 収益・利用率・支払い方式の統計
+- 日次・月次・年次レポート
+- 日本語・英語の多言語対応
+- ヘルスチェック・ログ・パフォーマンス監視
+
+## Engineering Focus
+
+- Spring Bootによる業務REST API
+- Spring Security / JWTによる認証・認可
+- PostgreSQL + JPA / Doma2によるデータアクセス
+- 決済・返金を含むトランザクション設計
+- 通知状態・再送処理の管理
+- 運営KPIを可視化する管理ダッシュボード
+- セキュリティ・監視を含めた業務システム設計
+
+## Portfolio Context
+
+This repository represents the **Smart Operations / Payment Systems** track of my portfolio. Unlike the broader `membership` enterprise SaaS platform, this project focuses on transaction processing, operational monitoring and secure management of a physical-service domain.
 
 ## 主な機能
 
